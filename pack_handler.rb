@@ -1,8 +1,10 @@
 $uniq_arr = [1,2,3]
 
 class PackHandler
-  def key=(val=nil)
-    @key = val
+  attr_accessor :key
+
+  def initialize(key=nil)
+    @key = key
   end
 
   def proc_items arr
@@ -24,8 +26,7 @@ class PackHandler
   end
 
   def identify arg
-    @key = arg
-    @key
+    self.key = arg
   end
 end
 
@@ -46,11 +47,16 @@ v.proc_items(array_of_hashes) do |e|
 end
 
 v.proc_items(array_of_hashes2) do |e|
-  # if e.class == Hash
-  #   array_of_hashes.each{|hash| hash if hash. }
-  # end
-  # array_of_hashes = array_of_hashes.uniq{|e| e[key]}
   $uniq_arr << e
+end
+
+p $uniq_arr
+
+v.reset
+v.identify :value
+
+v.proc_items([{value: 2}, {value: 3}]) do |e|
+  $uniq_arr << e if e[v.key] %2 == 0
 end
 
 p $uniq_arr
