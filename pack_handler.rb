@@ -1,28 +1,27 @@
-$uniq_arr = [1,2,3]
-
 class PackHandler
-  attr_accessor :key
+  attr_accessor :arr, :key
 
-  def initialize(key=nil)
+  def initialize(arr = [], key = nil)
+    @arr = arr
     @key = key
   end
 
-  def proc_items arr
+  def proc_items args
     unless @key.nil? && (@key.class == Symbol || String)
-      arr.uniq!{|e| e[@key]}
+      args.uniq!{|e| e[@key]}
     end
 
-    arr.each do |e|
-      yield(e) unless $uniq_arr.include?(e)
+    args.each do |e|
+      yield(e) unless self.arr.include?(e)
     end
   end
 
   def reset
-    $uniq_arr = []
+    self.arr = []
   end
 
   def procd_items
-    $uniq_arr
+    self.arr
   end
 
   def identify arg
@@ -30,33 +29,31 @@ class PackHandler
   end
 end
 
-array_of_hashes = [{id: 1}, {id: 1, test_key: 'Some data'}, {id: 2}]
-array_of_hashes2 = [{id: 2}, {id: 3}]
-v = PackHandler.new
+v = PackHandler.new([1,2,3])
 v.proc_items([3,4,5]) do |e|
-  $uniq_arr << e
+  v.arr << e
 end
 
-p $uniq_arr
+p v.arr
 v.procd_items
 v.reset
 v.identify :id
 
-v.proc_items(array_of_hashes) do |e|
-  $uniq_arr << e
+v.proc_items([{id: 1}, {id: 1, test_key: 'Some data'}, {id: 2}]) do |e|
+  v.arr << e
 end
 
-v.proc_items(array_of_hashes2) do |e|
-  $uniq_arr << e
+v.proc_items([{id: 2}, {id: 3}]) do |e|
+  v.arr << e
 end
 
-p $uniq_arr
+p v.arr
 
 v.reset
 v.identify :value
 
 v.proc_items([{value: 2}, {value: 3}]) do |e|
-  $uniq_arr << e if e[v.key] %2 == 0
+  v.arr << e if e[v.key] % 2 == 0
 end
 
-p $uniq_arr
+p v.arr
