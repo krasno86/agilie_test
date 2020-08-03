@@ -12,7 +12,7 @@ class PackHandler
     end
 
     args.each do |e|
-      yield(e) unless self.arr.include?(e)
+      yield(e) unless element_processed?(e) #&& should_proc?
     end
   end
 
@@ -26,6 +26,14 @@ class PackHandler
 
   def identify arg
     self.key = arg
+  end
+
+  # def should_proc?
+  #   yield(arg)
+  # end
+
+  def element_processed? element
+    self.arr.include?(element)
   end
 end
 
@@ -51,6 +59,10 @@ p v.arr
 
 v.reset
 v.identify :value
+
+# v.should_proc?​ do |item|
+#   item[:value​] % 2 == 0
+# end
 
 v.proc_items([{value: 2}, {value: 3}]) do |e|
   v.arr << e if e[v.key] % 2 == 0
