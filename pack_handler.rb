@@ -1,10 +1,11 @@
 class PackHandler
-  attr_accessor :processed_elements, :resulted_array, :uniq_by
+  attr_accessor :processed_elements, :resulted_array, :uniq_by, :filter_by_proc
 
   def initialize
     @processed_elements = []
     @resulted_array = []
     @uniq_by = ''
+    @filter_by_proc = proc { |item| item }
   end
 
   def proc_items arr
@@ -20,6 +21,7 @@ class PackHandler
     self.processed_elements = []
     self.resulted_array = []
     self.uniq_by = ''
+    self.filter_by_proc = proc { |item| item }
   end
 
   def procd_items
@@ -30,9 +32,14 @@ class PackHandler
     self.uniq_by = key
   end
 
+  def should_proc(&block)
+    self.filter_by_proc = block if block_given?
+  end
+
   private
 
   def can_be_processed?(element)
+    return true unless filter_by_proc.call(element)
     case
       when element.respond_to?(uniq_by)
         processed_elements.any? { |item| item.send(uniq_by) == element.send(uniq_by) }
@@ -71,6 +78,9 @@ p p_h.resulted_array
 p_h.reset
 p_h.identify :value
 
+p_h.should_proc do |item|
+  item[p_h.uniq_by] % 2 == 0
+end
 
 p_h.proc_items([{value: 2}, {value: 3}]) do |e|
   e
