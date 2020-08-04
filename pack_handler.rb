@@ -44,45 +44,39 @@ class PackHandler
   end
 end
 
-v = PackHandler.new
-v.proc_items([1,2,3]) do |e|
+p_h = PackHandler.new
+p_h.proc_items([1,2,3]) do |e|
   e
 end
 
-v.proc_items([3,4,5]) do |e|
+p_h.proc_items([3,4,5]) do |e|
   e
 end
 
-p v.resulted_array
-v.procd_items
-v.reset
-v.identify :id
+p p_h.resulted_array
+p_h.procd_items
+p_h.reset
+p_h.identify :id
 
-v.proc_items([{id: 1}, {id: 1, test_key: 'Some data'}, {id: 2}]) do |e|
+p_h.proc_items([{id: 1}, {id: 1, test_key: 'Some data'}, {id: 2}]) do |e|
   e
 end
 
-v.proc_items([{id: 2}, {id: 3}]) do |e|
+p_h.proc_items([{id: 2}, {id: 3}]) do |e|
   e
 end
 
-p v.resulted_array
+p p_h.resulted_array
 
-v.reset
-v.identify :value
+p_h.reset
+p_h.identify :value
 
 
-v.proc_items([{value: 2}, {value: 3}]) do |e|
+p_h.proc_items([{value: 2}, {value: 3}]) do |e|
   e
 end
 
-# v.should_proc​ do |item|
-#   item[:value​] % 2 == 0
-# end
-
-v.proc_items([{value: 2}, {value: 3}]) do |e|
-  e
-end
+p p_h.resulted_array
 
 class SomeClass
   attr_accessor :main_field
@@ -95,14 +89,14 @@ end
 a = SomeClass.new('a')
 b = SomeClass.new('b')
 
-p_h = PackHandler.new
-p_h.identify :main_field
-p_h.proc_items([a, b]) do |item|
+p_h1 = PackHandler.new
+p_h1.identify :main_field
+p_h1.proc_items([a, b]) do |item|
   item
 end
 
-p_h.proc_items([SomeClass.new('a')]) do |item|
+p_h1.proc_items([SomeClass.new('a')]) do |item|
   item
 end
 
-p p_h.resulted_array
+p p_h1.resulted_array
